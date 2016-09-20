@@ -19,7 +19,8 @@ filebeat.prospectors:
 {{ if var "TAGS" }}tags:{{ range var "TAGS" | split "," }}
   - "{{ . }}"{{ end }}{{ else }}#tags: []{{ end }}
 
-{{ if $meta }}fields:{{ range $meta | split "," }}
+fields:
+  environment: {{ var "ENVIRONMENT" | default "unknown" }}{{ if $meta }}{{ range $meta | split "," }}
   {{ . | lower }}: {{ var . }}{{ end }}{{ end }}
 
 #================================ Outputs =====================================
