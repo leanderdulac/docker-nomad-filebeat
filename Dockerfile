@@ -34,5 +34,6 @@ RUN set -ex \
 
 COPY docker-entrypoint.sh /
 COPY filebeat.yml.tmpl /etc/
-# ENTRYPOINT ["/docker-entrypoint.sh"]
-# CMD [ "filebeat", "-e" ]
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD [ "filebeat", "-e" ]
