@@ -9,6 +9,6 @@ for VAR in $(env | grep ^NOMAD_META_ | cut -d= -f1);do
   fi
 done
 
-sigil -f /etc/filebeat.yml.tmpl meta=$META > /etc/filebeat.yml
+sigil -f /filebeat.yml.tmpl meta=$META > /filebeat.yml
 
 exec "$@"

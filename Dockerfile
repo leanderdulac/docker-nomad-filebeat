@@ -32,8 +32,7 @@ RUN set -ex \
   && rm -rf filebeat* \
   && apk del curl
 
-COPY docker-entrypoint.sh /
-COPY filebeat.yml.tmpl /etc/
+COPY docker-entrypoint.sh filebeat.yml.tmpl /
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD [ "filebeat", "-e" ]
