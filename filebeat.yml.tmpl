@@ -1,40 +1,42 @@
-#=========================== Filebeat prospectors =============================
-filebeat.prospectors:
-  - input_type: log
-    document_type: {{ var "DOCUMENT_TYPE" | default "log" }}
-    paths:
-      - /alloc/logs/*.stdout.0
-    fields:
-      stream: stdout
-  - input_type: log
-    document_type: {{ var "DOCUMENT_TYPE" | default "log" }}
-    paths:
-      - /alloc/logs/*.stderr.0
-    fields:
-      stream: stderr
+filebeat:
+  prospectors:
+    - input_type: log
+      document_type: {{ var "DOCUMENT_TYPE" | default "log" }}
+      paths:
+        - /alloc/logs/*.stdout.0
+      fields:
+        stream: stdout
+        environment: {{ var "ENVIRONMENT" | default "unknown" }}{{ if $meta }}{{ range $meta | split "," }}
+        {{ . | lower }}: {{ var . }}{{ end }}{{ end }}
+    - input_type: log
+      document_type: {{ var "DOCUMENT_TYPE" | default "log" }}
+      paths:
+        - /alloc/logs/*.stderr.0
+      fields:
+        stream: stderr
+        environment: {{ var "ENVIRONMENT" | default "unknown" }}{{ if $meta }}{{ range $meta | split "," }}
+        {{ . | lower }}: {{ var . }}{{ end }}{{ end }}
 
-#================================ General =====================================
-{{ if var "BEAT_NAME" }}name: {{ var "BEAT_NAME" }}{{ else }}#name:{{ end }}
+shipper:
+  {{ if var "NAME" }}name: {{ var "NAME" }}{{ else }}#name:{{ end }}
+  tags:{{ if var "TAGS" }}{{ range var "TAGS" | split "," }}
+    - "{{ . }}"{{ end }}{{ else }} []{{ end }}
 
-{{ if var "TAGS" }}tags:{{ range var "TAGS" | split "," }}
-  - "{{ . }}"{{ end }}{{ else }}#tags: []{{ end }}
+output:
+{{ if var "ES_HOST" }}  elasticsearch:
+    hosts:{{ range var "ES_HOST" | split "," }}
+      - "{{ . }}"{{ end }}
+    index: {{ var "ES_INDEX" | default "filebeat" }}
+    protocol: {{ var "ES_PROTOCOL" | default "http" }}
+    username: {{ var "ES_USERNAME" | default "~" }}
+    password: {{ var "ES_PASSWORD" | default "~" }}{{ end }}
+{{ if var "LOGSTASH_HOST" }}  logstash:
+    hosts:{{ if var "LOGSTASH_HOST" }}{{ range var "LOGSTASH_HOST" | split "," }}
+      - "{{ . }}"{{ end }}{{else}} []{{end}}
+    port: {{ var "LOGSTASH_PORT" | default "10200" }}
+    index: {{ var "LOGSTASH_INDEX" | default "filebeat" }}
+    loadbalance: {{ var "LOGSTASH_LOADBALANCE" | default "false" }}{{ end }}
 
-fields:
-  environment: {{ var "ENVIRONMENT" | default "unknown" }}{{ if $meta }}{{ range $meta | split "," }}
-  {{ . | lower }}: {{ var . }}{{ end }}{{ end }}
-
-#================================ Outputs =====================================
-#-------------------------- Elasticsearch output ------------------------------
-{{ if var "ES_HOST" }}output.elasticsearch:
-  hosts:{{ range var "ES_HOST" | split "," }}
-    - "{{ . }}"{{ end }}
-{{ if var "ES_PROTOCOL" }}  protocol: {{ var "ES_PROTOCOL" }}{{ end }}
-{{ if var "ES_USERNAME" }}  username: {{ var "ES_USERNAME" }}{{ end }}
-{{ if var "ES_PASSWORD" }}  password: {{ var "ES_PASSWORD" }}{{ end }}{{ end }}
-#----------------------------- Logstash output --------------------------------
-{{ if var "LOGSTASH_HOST" }}output.logstash:
-  hosts:{{ range var "LOGSTASH_HOST" | split "," }}
-    - "{{ . }}"{{ end }}
-{{ if var "LOGSTASH_SSL_CAFILE" }}  ssl.certificate_authorities: {{ var "LOGSTASH_SSL_CAFILE" }}{{ end }}
-{{ if var "LOGSTASH_SSL_CERT" }}  ssl.certificate: {{ var "LOGSTASH_SSL_CERT" }}{{ end }}
-{{ if var "LOGSTASH_SSL_KEY" }}  ssl.key: {{ var "LOGSTASH_SSL_KEY" }}{{ end }}{{ end }}
+logging:
+  to_files: false
+  to_syslog: false
