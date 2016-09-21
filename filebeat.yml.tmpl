@@ -1,4 +1,5 @@
 filebeat:
+  registry_file: /local/.filebeat
   prospectors:
     - input_type: log
       document_type: {{ var "DOCUMENT_TYPE" | default "log" }}
@@ -36,6 +37,12 @@ output:
     port: {{ var "LOGSTASH_PORT" | default "10200" }}
     index: {{ var "LOGSTASH_INDEX" | default "filebeat" }}
     loadbalance: {{ var "LOGSTASH_LOADBALANCE" | default "false" }}{{ end }}
+{{ if var "REDIS_HOST" }}  redis:
+    host: {{ var "REDIS_HOST" }}
+    port: {{ var "REDIS_PORT" | default "6379" }}
+    db: {{ var "REDIS_DB" | default "0" }}
+    db_topology: {{ var "REDIS_DB_TOPOLOGY" | default "1" }}
+    password: {{ var "REDIS_PASSWORD" | default "~" }}{{ end }}
 
 logging:
   to_files: false
