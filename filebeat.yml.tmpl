@@ -5,6 +5,7 @@ filebeat:
       document_type: {{ var "DOCUMENT_TYPE" | default "log" }}
       paths:
         - /alloc/logs/*.stdout.*
+      fields_under_root: {{ var "FIELDS_UNDER_ROOT" | default "true" }}
       fields:
         stream: stdout
         {{ if var "ENVIRONMENT" }}environment: {{ var "ENVIRONMENT" }}{{ else }}#environment:{{ end }}
@@ -16,6 +17,7 @@ filebeat:
       document_type: {{ var "DOCUMENT_TYPE" | default "log" }}
       paths:
         - /alloc/logs/*.stderr.*
+      fields_under_root: {{ var "FIELDS_UNDER_ROOT" | default "true" }}
       fields:
         stream: stderr
         {{ if var "ENVIRONMENT" }}environment: {{ var "ENVIRONMENT" }}{{ else }}#environment:{{ end }}
