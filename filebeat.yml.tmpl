@@ -7,16 +7,22 @@ filebeat:
         - /alloc/logs/*.stdout.*
       fields:
         stream: stdout
-        {{ if var "ENVIRONMENT" }}environment: {{ var "ENVIRONMENT" }}{{ else }}#environment:{{ end }}{{ if $nomad_meta }}{{ range $nomad_meta | split "," }}
-        {{ . | lower }}: {{ var . }}{{ end }}{{ end }}
+        {{ if var "ENVIRONMENT" }}environment: {{ var "ENVIRONMENT" }}{{ else }}#environment:{{ end }}
+        {{ if or $nomad_vars $meta_vars }}nomad:{{ if $nomad_vars }}{{ range $nomad_vars | split "," }}
+          {{ . | replace "NOMAD_" "" | lower }}: {{ var . }}{{ end }}{{ end }}
+          {{ if $meta_vars }}meta:{{ range $meta_vars | split "," }}
+            {{ . | replace "NOMAD_META_" "" | lower }}: {{ var . }}{{ end }}{{ end }}{{ end }}
 {{ if eq (var "EXCLUDE_STDERR") "" }}    - input_type: log
       document_type: {{ var "DOCUMENT_TYPE" | default "log" }}
       paths:
         - /alloc/logs/*.stderr.*
       fields:
         stream: stderr
-        {{ if var "ENVIRONMENT" }}environment: {{ var "ENVIRONMENT" }}{{ else }}#environment:{{ end }}{{ if $nomad_meta }}{{ range $nomad_meta | split "," }}
-        {{ . | lower }}: {{ var . }}{{ end }}{{ end }}{{ end }}
+        {{ if var "ENVIRONMENT" }}environment: {{ var "ENVIRONMENT" }}{{ else }}#environment:{{ end }}
+        {{ if or $nomad_vars $meta_vars }}nomad:{{ if $nomad_vars }}{{ range $nomad_vars | split "," }}
+          {{ . | replace "NOMAD_" "" | lower }}: {{ var . }}{{ end }}{{ end }}
+          {{ if $meta_vars }}meta:{{ range $meta_vars | split "," }}
+            {{ . | replace "NOMAD_META_" "" | lower }}: {{ var . }}{{ end }}{{ end }}{{ end }}{{ end }}
 
 shipper:
   {{ if var "NAME" }}name: {{ var "NAME" }}{{ else }}#name:{{ end }}
