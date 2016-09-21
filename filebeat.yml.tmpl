@@ -7,10 +7,7 @@ filebeat:
         - /alloc/logs/*.stdout.*
       fields:
         stream: stdout
-        nomad_alloc_name: {{ var "NOMAD_ALLOC_NAME" }}
-        nomad_alloc_index: {{ var "NOMAD_ALLOC_INDEX" }}
-        nomad_alloc_id: {{ var "NOMAD_ALLOC_ID" }}
-        environment: {{ var "ENVIRONMENT" | default "unknown" }}{{ if $meta }}{{ range $meta | split "," }}
+        {{ if var "ENVIRONMENT" }}environment: {{ var "ENVIRONMENT" }}{{ else }}#environment:{{ end }}{{ if $nomad_meta }}{{ range $nomad_meta | split "," }}
         {{ . | lower }}: {{ var . }}{{ end }}{{ end }}
 {{ if eq (var "EXCLUDE_STDERR") "" }}    - input_type: log
       document_type: {{ var "DOCUMENT_TYPE" | default "log" }}
@@ -18,10 +15,7 @@ filebeat:
         - /alloc/logs/*.stderr.*
       fields:
         stream: stderr
-        nomad_alloc_name: {{ var "NOMAD_ALLOC_NAME" }}
-        nomad_alloc_index: {{ var "NOMAD_ALLOC_INDEX" }}
-        nomad_alloc_id: {{ var "NOMAD_ALLOC_ID" }}
-        environment: {{ var "ENVIRONMENT" | default "unknown" }}{{ if $meta }}{{ range $meta | split "," }}
+        {{ if var "ENVIRONMENT" }}environment: {{ var "ENVIRONMENT" }}{{ else }}#environment:{{ end }}{{ if $nomad_meta }}{{ range $nomad_meta | split "," }}
         {{ . | lower }}: {{ var . }}{{ end }}{{ end }}{{ end }}
 
 shipper:
