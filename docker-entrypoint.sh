@@ -6,6 +6,7 @@ for v in $(env | grep ^NOMAD_ | grep -v ^NOMAD_META_ | cut -d= -f1); do
   if [ "$v" = "NOMAD_CPU_LIMIT" ]; then continue; fi
   if [ "$v" = "NOMAD_ALLOC_DIR" ]; then continue; fi
   if [ "$v" = "NOMAD_TASK_DIR" ]; then continue; fi
+  if [ "$v" = "NOMAD_SECRETS_DIR" ]; then continue; fi
 
   if [ -n "$nomad_vars" ]; then
     nomad_vars="${nomad_vars},${v}"
