@@ -21,11 +21,11 @@ RUN set -ex \
   && rm sigil.tgz \
   && apk del curl
 
-ENV FILEBEAT_VERSION=1.3.1 \
-    FILEBEAT_SHA1=693c04e2251498e73436cfc2b36a3a0aec920a2d
+ENV FILEBEAT_VERSION=5.5.1 \
+    FILEBEAT_SHA1=2a348d116d5225327af0a9a54702889366af971e
 RUN set -ex \
   && apk add --no-cache curl \
-  && curl -Lo filebeat.tgz "https://download.elastic.co/beats/filebeat/filebeat-${FILEBEAT_VERSION}-x86_64.tar.gz" \
+  && curl -Lo filebeat.tgz "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VERSION}-linux-x86_64.tar.gz" \
   && echo "${FILEBEAT_SHA1}  filebeat.tgz" | sha1sum -c - \
   && tar xzf filebeat.tgz \
   && cp filebeat-*/filebeat /usr/local/bin \
