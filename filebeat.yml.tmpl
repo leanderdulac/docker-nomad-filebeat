@@ -12,6 +12,8 @@ filebeat:
         add_error_key: true
       paths:
         - /alloc/logs/*.stdout.*
+      exclude_files
+        - nomadbeat
       fields_under_root: {{ var "FIELDS_UNDER_ROOT" | default "true" }}
       fields:
         stream: stdout
@@ -27,6 +29,8 @@ filebeat:
         add_error_key: true
       paths:
         - /alloc/logs/*.stderr.*
+      exclude_files
+        - nomadbeat
       fields_under_root: {{ var "FIELDS_UNDER_ROOT" | default "true" }}
       fields:
         stream: stderr
@@ -40,10 +44,11 @@ output:
 {{ if var "ES_HOST" }}  elasticsearch:
     hosts:{{ range var "ES_HOST" | split "," }}
       - "{{ . }}"{{ end }}
-    index: {{ var "ES_INDEX" | default "filebeat" }}
+    index: {{ var "ES_INDEX" | default "logs-%{+yyyy.MM.dd}" }}
     protocol: {{ var "ES_PROTOCOL" | default "http" }}
     username: {{ var "ES_USERNAME" | default "~" }}
     password: {{ var "ES_PASSWORD" | default "~" }}{{ end }}
+    template.enabled: false
 {{ if var "LOGSTASH_HOST" }}  logstash:
     hosts:{{ if var "LOGSTASH_HOST" }}{{ range var "LOGSTASH_HOST" | split "," }}
       - "{{ . }}"{{ end }}{{else}} []{{end}}
