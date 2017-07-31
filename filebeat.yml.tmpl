@@ -1,8 +1,15 @@
+{{ if var "NAME" }}name: {{ var "NAME" }}{{ else }}#name:{{ end }}
+{{ if var "TAGS" }}tags:{{ range var "TAGS" | split "," }}
+  - "{{ . }}"{{ end }}{{ else }} []{{ end }}
+
 filebeat:
   registry_file: /local/.filebeat
   prospectors:
     - input_type: log
-      document_type: {{ var "DOCUMENT_TYPE" | default "log" }}
+      json:
+        key_under_root: true
+        overwrite_keys: true
+        add_error_key: true
       paths:
         - /alloc/logs/*.stdout.*
       fields_under_root: {{ var "FIELDS_UNDER_ROOT" | default "true" }}
@@ -14,7 +21,10 @@ filebeat:
           {{ if $meta_vars }}meta:{{ range $meta_vars | split "," }}
             {{ if var . }}{{ . | replace "NOMAD_META_" "" | lower }}: {{ var . }}{{ end }}{{ end }}{{ end }}{{ end }}
 {{ if eq (var "EXCLUDE_STDERR") "" }}    - input_type: log
-      document_type: {{ var "DOCUMENT_TYPE" | default "log" }}
+      json:
+        key_under_root: true
+        overwrite_keys: true
+        add_error_key: true
       paths:
         - /alloc/logs/*.stderr.*
       fields_under_root: {{ var "FIELDS_UNDER_ROOT" | default "true" }}
@@ -25,11 +35,6 @@ filebeat:
           {{ if var . }}{{ . | replace "NOMAD_" "" | lower }}: {{ var . }}{{ end }}{{ end }}{{ end }}
           {{ if $meta_vars }}meta:{{ range $meta_vars | split "," }}
             {{ if var . }}{{ . | replace "NOMAD_META_" "" | lower }}: {{ var . }}{{ end }}{{ end }}{{ end }}{{ end }}{{ end }}
-
-shipper:
-  {{ if var "NAME" }}name: {{ var "NAME" }}{{ else }}#name:{{ end }}
-  tags:{{ if var "TAGS" }}{{ range var "TAGS" | split "," }}
-    - "{{ . }}"{{ end }}{{ else }} []{{ end }}
 
 output:
 {{ if var "ES_HOST" }}  elasticsearch:
@@ -53,5 +58,6 @@ output:
     password: {{ var "REDIS_PASSWORD" | default "~" }}{{ end }}
 
 logging:
+  level: warning
   to_files: false
   to_syslog: false
