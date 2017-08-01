@@ -12,11 +12,12 @@ filebeat:
         add_error_key: true
       paths:
         - /alloc/logs/*.stdout.*
-      exclude_files
+      exclude_files:
         - nomadbeat
       fields_under_root: {{ var "FIELDS_UNDER_ROOT" | default "true" }}
       fields:
         stream: stdout
+        type: {{ var "DOCUMENT_TYPE" | default "log" }}
         {{ if var "ENVIRONMENT" }}environment: {{ var "ENVIRONMENT" }}{{ else }}#environment:{{ end }}
         {{ if or $nomad_vars $meta_vars }}nomad:{{ if $nomad_vars }}{{ range $nomad_vars | split "," }}
           {{ if var . }}{{ . | replace "NOMAD_" "" | lower }}: {{ var . }}{{ end }}{{ end }}{{ end }}
@@ -29,11 +30,12 @@ filebeat:
         add_error_key: true
       paths:
         - /alloc/logs/*.stderr.*
-      exclude_files
+      exclude_files:
         - nomadbeat
       fields_under_root: {{ var "FIELDS_UNDER_ROOT" | default "true" }}
       fields:
         stream: stderr
+        type: {{ var "DOCUMENT_TYPE" | default "log" }}
         {{ if var "ENVIRONMENT" }}environment: {{ var "ENVIRONMENT" }}{{ else }}#environment:{{ end }}
         {{ if or $nomad_vars $meta_vars }}nomad:{{ if $nomad_vars }}{{ range $nomad_vars | split "," }}
           {{ if var . }}{{ . | replace "NOMAD_" "" | lower }}: {{ var . }}{{ end }}{{ end }}{{ end }}
