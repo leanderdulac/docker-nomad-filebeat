@@ -49,8 +49,8 @@ output:
     index: {{ var "ES_INDEX" | default "logs-%{+yyyy.MM.dd}" }}
     protocol: {{ var "ES_PROTOCOL" | default "http" }}
     username: {{ var "ES_USERNAME" | default "~" }}
-    password: {{ var "ES_PASSWORD" | default "~" }}{{ end }}
-    template.enabled: false
+    password: {{ var "ES_PASSWORD" | default "~" }}
+    template.enabled: false{{ end }}
 {{ if var "LOGSTASH_HOST" }}  logstash:
     hosts:{{ if var "LOGSTASH_HOST" }}{{ range var "LOGSTASH_HOST" | split "," }}
       - "{{ . }}"{{ end }}{{else}} []{{end}}
