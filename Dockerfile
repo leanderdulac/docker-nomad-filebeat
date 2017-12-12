@@ -1,4 +1,4 @@
-from frolvlad/alpine-glibc:alpine-3.4
+FROM frolvlad/alpine-glibc:alpine-3.4
 
 # install dumb-init, a simple process supervisor and init system
 ENV DUMB_INIT_VERSION 1.1.3
