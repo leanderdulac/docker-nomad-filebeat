@@ -6,10 +6,14 @@ filebeat:
   registry_file: /local/.filebeat
   prospectors:
     - input_type: log
+    {{ if ne (var "APPTYPE") "nginx" }}
       json:
         key_under_root: true
         overwrite_keys: true
         add_error_key: true
+    {{ else }}
+      document_type: nginx_access
+    {{ end }}
       paths:
         - /alloc/logs/*.stdout.*
       exclude_files:
@@ -24,10 +28,14 @@ filebeat:
           {{ if $meta_vars }}meta:{{ range $meta_vars | split "," }}
             {{ if var . }}{{ . | replace "NOMAD_META_" "" | lower }}: {{ var . }}{{ end }}{{ end }}{{ end }}{{ end }}
 {{ if eq (var "EXCLUDE_STDERR") "" }}    - input_type: log
+    {{ if ne (var "APPTYPE") "nginx" }}
       json:
         key_under_root: true
         overwrite_keys: true
         add_error_key: true
+    {{ else }}
+      document_type: nginx_error
+    {{ end }}
       paths:
         - /alloc/logs/*.stderr.*
       exclude_files:
