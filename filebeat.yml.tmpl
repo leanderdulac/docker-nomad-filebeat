@@ -6,14 +6,10 @@ filebeat:
   registry_file: /local/.filebeat
   prospectors:
     - input_type: log
-    {{ if ne (var "APPTYPE") "nginx" }}
       json:
         key_under_root: true
         overwrite_keys: true
         add_error_key: true
-    {{ else }}
-      document_type: nginx_access
-    {{ end }}
       paths:
         - /alloc/logs/*.stdout.*
       exclude_files:
@@ -63,7 +59,7 @@ output:
     hosts:{{ if var "LOGSTASH_HOST" }}{{ range var "LOGSTASH_HOST" | split "," }}
       - "{{ . }}"{{ end }}{{else}} []{{end}}
     port: {{ var "LOGSTASH_PORT" | default "10200" }}
-    index: {{ var "LOGSTASH_INDEX" | default "filebeat" }}
+    index: {{ var "LOGSTASH_INDEX" | default "logs" }}
     loadbalance: {{ var "LOGSTASH_LOADBALANCE" | default "false" }}{{ end }}
 {{ if var "REDIS_HOST" }}  redis:
     host: {{ var "REDIS_HOST" }}
