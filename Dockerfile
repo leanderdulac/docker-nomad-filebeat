@@ -1,5 +1,4 @@
 FROM alpine:3.6
-
 # install dumb-init, a simple process supervisor and init system
 ENV DUMB_INIT_VERSION 1.1.3
 RUN set -ex \
