@@ -1,4 +1,4 @@
-FROM frolvlad/alpine-glibc:alpine-3.4
+FROM alpine:3.6
 
 # install dumb-init, a simple process supervisor and init system
 ENV DUMB_INIT_VERSION 1.1.3
@@ -21,12 +21,12 @@ RUN set -ex \
   && rm sigil.tgz \
   && apk del curl
 
-ENV FILEBEAT_VERSION=5.5.1 \
-    FILEBEAT_SHA1=2a348d116d5225327af0a9a54702889366af971e
+ENV FILEBEAT_VERSION=6.5.0 \
+    FILEBEAT_SHA512=ba23afb2ff159d34917b59a8d2b74f4b2e8fa27c3bc40a9ac2b6f3d646384098caa4fb4c4fcf4afe98f09520b548aa873a67ee3557f6061347aeecb74328de1b
 RUN set -ex \
   && apk add --no-cache curl \
   && curl -Lo filebeat.tgz "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VERSION}-linux-x86_64.tar.gz" \
-  && echo "${FILEBEAT_SHA1}  filebeat.tgz" | sha1sum -c - \
+  && echo "${FILEBEAT_SHA512}  filebeat.tgz" | sha512sum -c - \
   && tar xzf filebeat.tgz \
   && cp filebeat-*/filebeat /usr/local/bin \
   && rm -rf filebeat* \
