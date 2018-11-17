@@ -23,6 +23,6 @@ for v in $(env | grep ^NOMAD_META_ | cut -d= -f1); do
   fi
 done
 
-sigil -f /filebeat.yml.tmpl meta_vars=$meta_vars nomad_vars=$nomad_vars > /filebeat.yml
+sigil -f /filebeat.yml.tmpl meta_vars=$meta_vars nomad_vars=$nomad_vars > /usr/share/filebeat/filebeat.yml
 
 exec "$@"

@@ -3,7 +3,7 @@
   - "{{ . }}"{{ end }}{{ else }} []{{ end }}
 
 filebeat:
-  registry_file: /local/.filebeat
+  registry_file: /usr/share/filebeat/.filebeat
   prospectors:
     - input_type: log
       json:
